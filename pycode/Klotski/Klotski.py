@@ -68,6 +68,31 @@ def is_win(blocks):
     return True
 
 
+def get_inversion(blocks):
+    # 计算逆序数
+
+    inv = 0
+    for i in range(1, len(blocks)):
+        for j in range(i):
+            if blocks[j] > blocks[i]:
+                inv += 1
+    return inv
+
+
+def is_soluble(blocks):
+    # 判断是否可解
+
+    n = int(sqrt(len(blocks)))  # 开平方列表长度
+    if n % 2 == 1:
+        f = False
+    else:
+        f = True
+    z = get_zero(blocks)
+    if (len(blocks) - 1 - z) % 2 == 1:
+        f = not f
+    return f == (get_inversion(blocks) % 2 == 1)
+
+
 if __name__ == "__main__":
     # 主函数
 
@@ -79,11 +104,11 @@ if __name__ == "__main__":
             else:
                 print("Illegal input!!!")
         blocks = list(range(n ** 2))
-        while True:  # 防止随机生成的列表正好胜利的情况
+        while True:  # 防止随机生成的列表正好胜利或者无解的情况
             for i in range(len(blocks)):
                 r = random.randint(0, len(blocks) - i - 1)
                 blocks[i], blocks[i+r] = blocks[i+r], blocks[i]
-            if not is_win(blocks):
+            if (not is_win(blocks)) and is_soluble(blocks):
                 break
         while True:  # 监测用户输入并实时进行输出
             screen_print(blocks)
